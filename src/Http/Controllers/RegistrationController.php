@@ -100,7 +100,7 @@ class RegistrationController extends Controller
         return $serializedOptions;
     }
 
-    public function verify(Request $request, ServerRequestInterface $serverRequest)
+    public function verify(Request $request)
     {
         $pkSourceRepo = new CredentialSourceRepository();
 
@@ -133,7 +133,7 @@ class RegistrationController extends Controller
             publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions::createFromArray(
                 $request->session()->get(self::CREDENTIAL_CREATION_OPTIONS_SESSION_KEY)
             ),
-            request: $serverRequest,
+            request: $request->getHost(),
         );
 
         $user = auth()->user();

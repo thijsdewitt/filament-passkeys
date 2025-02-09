@@ -16,7 +16,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
             ->where('credential_id', base64_encode($publicKeyCredentialId))
             ->first();
 
-        if (! $passkey) {
+        if (!$passkey) {
             return null;
         }
 
@@ -38,17 +38,19 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         $user = User::query()
             ->findOrFail($publicKeyCredentialSource->userHandle);
 
-        $passkey = $user->passkeys()
+        $passkey = $user
+            ->passkeys()
             ->firstWhere('credential_id', base64_encode($publicKeyCredentialSource->publicKeyCredentialId));
 
-        if (! $passkey) {
+        if (!$passkey) {
             $passkey = $user->passkeys()->create([
                 'credential_id' => $publicKeyCredentialSource->publicKeyCredentialId,
+                'credential_data' => $publicKeyCredentialSource->jsonSerialize(),
+            ]);
+        } else {
+            $passkey->update([
+                'credential_data' => $publicKeyCredentialSource->jsonSerialize(),
             ]);
         }
-
-        $passkey->update([
-            'credential_data' => $publicKeyCredentialSource->jsonSerialize(),
-        ]);
     }
 }

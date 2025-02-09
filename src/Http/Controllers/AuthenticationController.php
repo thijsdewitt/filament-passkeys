@@ -52,7 +52,7 @@ class AuthenticationController extends Controller
         return $serializedOptions;
     }
 
-    public function verify(Request $request, ServerRequestInterface $serverRequest)
+    public function verify(Request $request)
     {
         $pkSourceRepo = new CredentialSourceRepository();
 
@@ -102,7 +102,7 @@ class AuthenticationController extends Controller
             publicKeyCredentialRequestOptions: PublicKeyCredentialRequestOptions::createFromArray(
                 $request->session()->get(self::CREDENTIAL_REQUEST_OPTIONS_SESSION_KEY)
             ),
-            request: $serverRequest,
+            request: $request->getHost(),
             userHandle: $authenticatorAssertionResponse->userHandle,
         );
 
